@@ -26,7 +26,7 @@ jobs:
       - restore_cache:
           keys: [build-backend]
       - run:
-          name: Back-end build
+          name: Build back-end
           command: |
             cd backend
             npm install
@@ -103,4 +103,8 @@ workflows:
       - test-frontend:
           requires: [build-frontend]
       - test-backend:
+          requires: [build-backend]
+      - scan-frontend:
+          requires: [build-frontend]
+      - scan-backend:
           requires: [build-backend]
