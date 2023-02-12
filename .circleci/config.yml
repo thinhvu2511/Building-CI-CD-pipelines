@@ -1,25 +1,15 @@
 version: 2.1
 
 jobs:
-  build:
-    docker:
-      - image: cimg/base:2020.01
-    steps:
-      - checkout
-      - run:
-          name: "echo an env var that is part of our project"
-          command: |
-            echo $MY_ENV_VAR
   build-backend:
     docker:
-      - image: circleci/node:13.8.0
+      - image: circleci/node:12.15.0
     steps:
       - checkout
       - run:
           name: Back-end build
           command: |
             cd frontend
-            npm login
             npm install
             npm run build
       - save_cache:
