@@ -19,6 +19,7 @@ jobs:
           name: Back-end build
           command: |
             cd frontend
+            npm login
             npm install
             npm run build
       - save_cache:
