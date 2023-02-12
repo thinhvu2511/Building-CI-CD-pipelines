@@ -100,7 +100,6 @@ jobs:
       - image: cimg/base:2021.04
     steps:
       - checkout
-      - dependencies
       - run:
           name: Ensure back-end infrastructure exists
           command: |
