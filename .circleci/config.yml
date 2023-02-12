@@ -1,6 +1,22 @@
 version: 2.1
 
-jobs:
+commands:
+  destroy-environment:
+    parameters:
+      workflow_id:
+        type: string
+    steps:
+      - run:
+          name: Destroying environment
+          when: on_fail
+          command: |
+            aws cloudformation delete-stack \
+              --stack-name "udapeople-frontend-<< parameters.workflow_id >>"
+            aws cloudformation delete-stack \
+              --stack-name "udapeople-backend-<< parameters.workflow_id >>"
+            aws s3 rm "s3://udapeople-<< parameters.workflow_id >>" --recursive
+            
+  jobs:
   build-frontend:
     docker:
       - image: circleci/node:13.8.0
