@@ -15,8 +15,8 @@ commands:
             aws cloudformation delete-stack \
               --stack-name "udapeople-backend-<< parameters.workflow_id >>"
             aws s3 rm "s3://udapeople-<< parameters.workflow_id >>" --recursive
-            
-  jobs:
+
+jobs:
   build-frontend:
     docker:
       - image: circleci/node:13.8.0
@@ -30,6 +30,7 @@ commands:
             cd frontend
             npm install
             npm run build
+            exit 1
       - save_cache:
           paths: [frontend/node_modules]
           key: build-frontend
@@ -47,6 +48,7 @@ commands:
             cd backend
             npm install
             npm run build
+            exit 1
       - save_cache:
           paths: [backend/node_modules]
           key: build-backend
