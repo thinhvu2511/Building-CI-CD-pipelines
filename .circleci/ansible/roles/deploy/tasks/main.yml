@@ -11,7 +11,7 @@
         tar xvzf artifact.tar.gz -C .
   - name: "run server"
     become: true
-    shell : |s
+    shell : |
         cd /home/ubuntu/
         npm install
         pm2 stop default
