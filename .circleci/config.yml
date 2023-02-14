@@ -174,7 +174,7 @@ jobs:
       - checkout
       # Add ssh keys with fingerprint
       - add_ssh_keys:
-          fingerprints: ["63:4a:30:44:ce:1a:c7:18:b5:1b:3f:96:25:d5:85:0e"]
+          fingerprints: ["6c:d7:72:48:80:01:1b:a2:05:67:15:cc:31:eb:dc:c0"]
       - attach_workspace:
           at: ~/
       - run:
@@ -229,7 +229,17 @@ jobs:
       - restore_cache:
           keys:
             - build-frontend
-      - dependencies
+      - run:
+          name: Installing necessary packages
+          command: |
+            sudo apt update
+            sudo apt install -y tar gzip curl software-properties-common
+      - run:
+          name: Installing aws-cli
+          command: |
+            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+            unzip awscliv2.zip
+            sudo ./aws/install
       - run:
           name: Get backend url
           command: |
