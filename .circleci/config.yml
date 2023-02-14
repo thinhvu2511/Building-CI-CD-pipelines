@@ -22,9 +22,7 @@ commands:
             sudo apt install ansible
 
   destroy-environment:
-    parameters:
-      workflow_id:
-        type: string
+    description: Destroy stack when on-fail
     steps:
       - run:
           name: Destroying environment
@@ -303,7 +301,7 @@ jobs:
             ansible-playbook -i ~/project/.circleci/ansible/inventory.txt ~/project/.circleci/ansible/deploy-backend.yml
       - destroy-environment
       - revert-migrations
-      
+
 workflows:
   default:
     jobs:
