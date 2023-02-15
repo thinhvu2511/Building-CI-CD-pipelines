@@ -310,7 +310,7 @@ jobs:
 
   smoke-test:
     docker:
-      - image: circleci/node:13.8.0
+      - image: python:3.7-alpine3.11  
     steps:
       - checkout
       - run:
@@ -320,6 +320,7 @@ jobs:
             curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
             unzip awscliv2.zip
             sudo ./aws/install
+      - run: apk add --update curl
       - run:
           name: Install node modules
           command: |
@@ -330,8 +331,7 @@ jobs:
       - run:
           name: Backend smoke test.
           command: |
-            cat ~/project/.circleci/ansible/inventory.txt | sed 1d
-            export BACKEND_IP=$(cat ~/project/.circleci/ansible/inventory.txt | sed 1d)
+            export BACKEND_IP=$(aws ec2 describe-instances --query 'Reservations[*].Instances[*].PublicIpAddress' --output text)
             export API_URL="http://${BACKEND_IP}:3030"
             curl "${API_URL}/api/status"
       - run:
