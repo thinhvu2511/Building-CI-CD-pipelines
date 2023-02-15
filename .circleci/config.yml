@@ -292,6 +292,11 @@ jobs:
           keys:
             - build-backend
       - run:
+          name: Installing necessary packages
+          command: |
+            sudo apt update
+            sudo apt install -y tar gzip curl software-properties-common
+      - run:
           name: Install dependencies
           command: |
             apk add --update ansible nodejs npm tar gzip
