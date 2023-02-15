@@ -295,12 +295,7 @@ jobs:
           name: Install dependencies
           command: |
             apk add --update ansible nodejs curl npm tar gzip
-      - run:
-          name: Installing aws-cli
-          command: |
-            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-            unzip awscliv2.zip
-            sudo ./aws/install
+            pip install awscli
       - run:
           name: Deploy backend
           command: |
@@ -308,7 +303,7 @@ jobs:
             npm install
             npm run build
             cd ..
-            tar -C backend -czvf artifact.tar.gz .
+            tar -czvf backend-artifact.tar.gz backend
             cat ~/project/.circleci/ansible/inventory.txt
             ansible-playbook -i ~/project/.circleci/ansible/inventory.txt ~/project/.circleci/ansible/deploy-backend.yml
       - destroy-environment
