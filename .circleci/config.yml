@@ -189,7 +189,7 @@ jobs:
       - checkout
       # Add ssh keys with fingerprint
       - add_ssh_keys:
-          fingerprints: ["6c:d7:72:48:80:01:1b:a2:05:67:15:cc:31:eb:dc:c0"]
+          fingerprints: ["bb:98:65:23:75:a7:ca:1c:fb:01:f0:b6:16:c2:88:00"]
       - attach_workspace:
           at: ~/
       - run:
@@ -285,7 +285,7 @@ jobs:
     steps:
       - checkout
       - add_ssh_keys:
-          fingerprints: ["6c:d7:72:48:80:01:1b:a2:05:67:15:cc:31:eb:dc:c0"]
+          fingerprints: ["bb:98:65:23:75:a7:ca:1c:fb:01:f0:b6:16:c2:88:00"]
       - attach_workspace: 
           at: ~/
       - restore_cache:
@@ -307,6 +307,47 @@ jobs:
             ansible-playbook -i ~/project/.circleci/ansible/inventory.txt ~/project/.circleci/ansible/deploy-backend.yml
       - destroy-environment
       - revert-migrations
+
+  smoke-test:
+    docker:
+      - image: circleci/node:13.8.0
+    steps:
+      - checkout
+      - run:
+          name: Install dependencies
+          command: |
+            sudo apt install -y tar gzip curl unzip
+            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+            unzip awscliv2.zip
+            sudo ./aws/install
+      - run:
+          name: Install node modules
+          command: |
+            cd backend
+            npm install
+      - attach_workspace:
+          at: ~/
+      - run:
+          name: Backend smoke test.
+          command: |
+            cat ~/project/.circleci/ansible/inventory.txt | sed 1d
+            export BACKEND_IP=$(cat ~/project/.circleci/ansible/inventory.txt | sed 1d)
+            export API_URL="http://${BACKEND_IP}:3030"
+            curl "${API_URL}/api/status"
+      - run:
+          name: Frontend smoke test.
+          # Change return status to 0 after the job fails.
+          command: |
+            URL="http://udapeople-${CIRCLE_WORKFLOW_ID:0:7}.s3-website-us-east-1.amazonaws.com"
+            echo ${URL} 
+            if curl -s ${URL} | grep "Welcome"
+            then
+              exit 1
+            else
+              exit 1
+            fi
+      - destroy-environment
+      - revert-migrations 
 
 workflows:
   default:
