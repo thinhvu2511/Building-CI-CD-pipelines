@@ -351,7 +351,7 @@ jobs:
       - run:
           name: get old workflow for clean
           command: |
-            OldWorkflowID=$(aws cloudformation \
+            OLD_WORKFLOW_ID=$(aws cloudformation \
             list-exports --query "Exports[?Name==\`WorkflowID\`].Value" \
             --no-paginate --output text)
             echo "OLD_WORKFLOW_ID: $OLD_WORKFLOW_ID."
