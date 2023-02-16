@@ -339,21 +339,20 @@ jobs:
             else
               exit 1
             fi
+      - destroy-environment
+      - revert-migrations
 
   cloudfront-update:
     docker:
-      - image: cimg/base:2021.04
+      - image: amazon/aws-cli
     steps:
       - checkout
       - dependencies
       - run:
           name: get old workflow for clean
           command: |
-            aws cloudformation list-exports --query "Exports[?Name==\`UdapeopleWorkflowID\`].Value" --no-paginate --output text >> ~/WorkflowID.txt
-            cat ~/WorkflowID.txt
-            OLD_WORKFLOW_ID = $(cat ~/WorkflowID.txt)
+            export OLD_WORKFLOW_ID=($(aws cloudformation list-exports --query "Exports[?Name==\`UdapeopleWorkflowID\`].Value" --no-paginate --output text))
             echo OLD_WORKFLOW_ID: "${OLD_WORKFLOW_ID}"
-            echo $OLD_WORKFLOW_ID
       - run:
           name: Updating cloudfront
           command: |
