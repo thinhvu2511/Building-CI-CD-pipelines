@@ -351,7 +351,7 @@ jobs:
       - run:
           name: get old workflow for clean
           command: |
-            aws cloudformation list-exports --query "Exports[?Name==\`UdapeopleWorkflowID\`].Value" --no-paginate --output text)) >> ~/WorkflowID.txt
+            aws cloudformation list-exports --query "Exports[?Name==\`UdapeopleWorkflowID\`].Value" --no-paginate --output text >> ~/WorkflowID.txt
             cat ~/WorkflowID.txt
             OLD_WORKFLOW_ID = $(cat ~/WorkflowID.txt)
             echo OLD_WORKFLOW_ID: "${OLD_WORKFLOW_ID}"
