@@ -189,7 +189,7 @@ jobs:
       - checkout
       # Add ssh keys with fingerprint
       - add_ssh_keys:
-          fingerprints: ["e7:dc:85:ae:1b:36:99:a0:8a:7d:b1:64:82:88:b4:b8"]
+          fingerprints: ["9f:f9:62:96:8a:f0:b2:4d:1a:3d:15:02:68:08:21:72"]
       - attach_workspace:
           at: ~/
       - run:
@@ -285,7 +285,7 @@ jobs:
     steps:
       - checkout
       - add_ssh_keys:
-          fingerprints: ["e7:dc:85:ae:1b:36:99:a0:8a:7d:b1:64:82:88:b4:b8"]
+          fingerprints: ["9f:f9:62:96:8a:f0:b2:4d:1a:3d:15:02:68:08:21:72"]
       - attach_workspace: 
           at: ~/
       - restore_cache:
@@ -354,7 +354,7 @@ jobs:
             OldWorkflowID=$(aws cloudformation \
             list-exports --query "Exports[?Name==\`WorkflowID\`].Value" \
             --no-paginate --output text)
-            curl --insecure https://kvdb.io/6e5v9HJcV5bG9CbPBaQ4jV//migration_${CIRCLE_WORKFLOW_ID:0:7} -d "$OldWorkflowID"  
+            echo "OLD_WORKFLOW_ID: $OLD_WORKFLOW_ID."
       - run:
           name: Updating cloudfront
           command: |
@@ -363,6 +363,19 @@ jobs:
             --stack-name InitialStack \
             --parameter-overrides WorkflowID="${CIRCLE_WORKFLOW_ID:0:7}" \
             --tags project=udapeople
+      - run:
+          name: cleanup
+          command: |
+            export STACKS=($(aws cloudformation list-stacks --query "StackSummaries[*].StackName" \
+            --stack-status-filter CREATE_COMPLETE --no-paginate --output text))
+            echo Stack names: "${STACKS[@]}"
+
+            if [[ "${STACKS[@]}" =~ "${OldWorkflowID}" ]]
+            then
+              aws s3 rm "s3://udapeople-${OldWorkflowID}" --recursive
+              aws cloudformation delete-stack --stack-name "udapeople-backend-${OldWorkflowID}"
+              aws cloudformation delete-stack --stack-name "udapeople-frontend-${OldWorkflowID}"
+            fi
 workflows:
   default:
     jobs:
