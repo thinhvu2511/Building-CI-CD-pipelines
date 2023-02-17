@@ -1,0 +1,8 @@
+URL1: A public git repository with your project code:
+	https://github.com/thinhvu2511/Building-CI-CD-pipelines
+
+URL2: Evidence of deployed and functioning front-end application in an S3 bucket:
+	http://udapeople-4ad4a01.s3-website-us-east-1.amazonaws.com
+
+URL3: URL CloudFront Front-end
+	https://d2zlzsovi5gg70.cloudfront.net
